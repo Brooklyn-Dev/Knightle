@@ -12,7 +12,10 @@
 	"description": "Daily knight chess puzzle game backend",
 	"dependencies": {
 		"cors": "^2.8.5",
-		"express": "^5.1.0"
+		"dotenv": "^17.2.0",
+		"express": "^5.1.0",
+		"helmet": "^8.1.0",
+		"morgan": "^1.10.1"
 	},
 	"devDependencies": {
 		"nodemon": "^3.1.10"
