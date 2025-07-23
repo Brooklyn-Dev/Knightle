@@ -1,9 +1,10 @@
 import { fetchDailyPuzzle } from "./api.js";
 
-let boardSize = 6;
+let boardSize;
 const boardEl = document.getElementById("chessboard");
 
-let title = "Knightle";
+const currentMovesEl = document.getElementById("current-moves");
+const optimalMovesEl = document.getElementById("optimal-moves");
 
 // Game state
 let knightPosition = [0, 0];
@@ -77,6 +78,10 @@ function getSquareAt(row, col) {
 
 function getKnightEl() {
 	return getSquareAt(...knightPosition).querySelector(".knight");
+}
+
+function updateMoveDisplay() {
+	currentMovesEl.textContent = moveCount;
 }
 
 // Drag Handlers
@@ -189,9 +194,14 @@ function moveKnightTo(newRow, newCol) {
 
 	knightPosition = [newRow, newCol];
 	visitedPositions.add(`${newRow},${newCol}`);
-	moveCount++;
+	onMakeMove();
 
 	checkWinCondition();
+}
+
+function onMakeMove() {
+	moveCount++;
+	updateMoveDisplay();
 }
 
 function checkWinCondition() {
@@ -216,6 +226,7 @@ async function init() {
 	knightPosition = puzzle.start;
 	boardSize = puzzle.boardSize || 6;
 	targetPositions = puzzle.targets;
+	optimalMovesEl.textContent = puzzle.leastMoves || "-";
 
 	createBoard();
 	placeKnightOnBoard();

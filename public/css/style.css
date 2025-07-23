@@ -37,6 +37,23 @@ h1 {
 	max-height: 100vh;
 }
 
+.game-status {
+	width: 100%;
+	padding: 1.6rem 1rem;
+}
+
+.moves-info {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	font-size: 2rem;
+}
+
+.move-display,
+.optimal-display {
+	font-weight: 500;
+}
+
 .chessboard {
 	display: grid;
 	grid-template-columns: repeat(var(--board-size), 1fr);
