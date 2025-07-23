@@ -42,7 +42,7 @@ h1 {
 	grid-template-columns: repeat(var(--board-size), 1fr);
 	grid-template-rows: repeat(var(--board-size), 1fr);
 	gap: 0px;
-	border: 2px solid #000;
+	border: 3px solid #0a0a0a;
 
 	height: auto;
 	aspect-ratio: 1;
@@ -57,6 +57,7 @@ h1 {
 	align-items: center;
 	justify-content: center;
 	overflow: hidden;
+	transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .square.light {
@@ -76,6 +77,10 @@ h1 {
 	opacity: 0.8;
 }
 
+.square:has(.knight):hover {
+	box-shadow: inset 0 0 0 3px rgba(0, 0, 0, 0.15);
+}
+
 .knight {
 	width: 100%;
 	height: 100%;
@@ -83,15 +88,18 @@ h1 {
 	cursor: grab;
 	user-select: none;
 	z-index: 10;
+	transition: filter 0.2s cubic-bezier(0.4, 0, 0.2, 1), font-size 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+	will-change: transform, font-size;
 }
 
 .knight:active {
 	cursor: grabbing;
+	font-size: 9rem;
 }
 
 .knight.dragging {
-	opacity: 0.9;
 	position: fixed !important;
 	pointer-events: none;
 	z-index: 1000;
+	filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3));
 }
