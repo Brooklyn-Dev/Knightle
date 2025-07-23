@@ -56,9 +56,6 @@ h1 {
 	position: relative;
 	width: 100%;
 	height: 100%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
 	overflow: hidden;
 	transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -117,24 +114,40 @@ h1 {
 }
 
 .knight {
-	width: 100%;
-	height: 100%;
-	font-size: 8rem;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 90%;
+	height: 90%;
+	transform: translate(-50%, -50%);
 	cursor: grab;
 	user-select: none;
 	z-index: 10;
-	transition: filter 0.2s cubic-bezier(0.4, 0, 0.2, 1), font-size 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-	will-change: transform, font-size;
+	transition: filter 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+	will-change: transform;
+}
+
+.knight svg {
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+	overflow: visible;
 }
 
 .knight:active {
 	cursor: grabbing;
-	font-size: 9rem;
+	transform: scale(1.05);
 }
 
 .knight.dragging {
 	position: fixed !important;
-	pointer-events: none;
+	transition: none;
 	z-index: 1000;
-	filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3));
+	cursor: grabbing;
+	filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.5));
+}
+
+.knight.game-over {
+	pointer-events: none !important;
+	cursor: default !important;
 }

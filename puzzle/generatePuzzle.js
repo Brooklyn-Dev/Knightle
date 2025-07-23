@@ -8,7 +8,7 @@ function generatePuzzle(dateString) {
 	const rng = getRNG(dateString);
 
 	const boardSize = 6;
-	const numTargets = 3 + Math.floor(rng() * 3); // 3-5 targets
+	const numTargets = 4 + Math.floor(rng() * 3); // 4-6 targets
 
 	const startRow = Math.floor(rng() * boardSize);
 	const startCol = Math.floor(rng() * boardSize);
