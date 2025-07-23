@@ -67,7 +67,12 @@ h1 {
 	background: #b58863;
 }
 
-.square:hover {
+.square.valid {
+	background: #22c55e !important;
+	box-shadow: inset 0 0 0 3px #16a34a;
+}
+
+.square.valid:hover {
 	opacity: 0.8;
 }
 

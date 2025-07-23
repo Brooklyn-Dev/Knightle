@@ -9,6 +9,7 @@ let moveCount = 0;
 let isDragging = true;
 let draggedKnight = null;
 let dragOffset = [0, 0];
+const highlightedSquares = [];
 
 // Setup
 function createBoard() {
@@ -71,6 +72,8 @@ function onMouseDown(e) {
 		updateDraggedKnightPosition(e.clientX, e.clientY);
 		e.target.classList.add("dragging");
 
+		highlightValidMoves();
+
 		e.preventDefault();
 	}
 }
@@ -104,6 +107,7 @@ function onMouseUp(e) {
 	}
 
 	stopDraggingKnight();
+	clearHighlightedSquares();
 }
 
 function updateDraggedKnightPosition(clientX, clientY) {
@@ -115,6 +119,29 @@ function stopDraggingKnight() {
 	draggedKnight?.classList.remove("dragging");
 	isDragging = false;
 	draggedKnight = null;
+}
+
+function highlightValidMoves() {
+	if (isDragging && draggedKnight) {
+		// prettier-ignore
+		const moves = [[2, -1], [2, 1], [1, 2], [-1, 2], [-2, 1], [-2, -1], [-1, -2], [1, -2]];
+		moves.forEach(([rowDiff, colDiff]) => {
+			const targetRow = knightPosition[0] + rowDiff;
+			const targetCol = knightPosition[1] + colDiff;
+			if (targetRow >= 0 && targetRow < BOARD_SIZE && targetCol >= 0 && targetCol < BOARD_SIZE) {
+				const targetSquare = getSquareAt(targetRow, targetCol);
+				targetSquare.classList.add("valid");
+				highlightedSquares.push(targetSquare);
+			}
+		});
+	}
+}
+
+function clearHighlightedSquares() {
+	highlightedSquares.forEach((square) => {
+		square.classList.remove("valid");
+	});
+	highlightedSquares.length = 0;
 }
 
 // Game Logic
