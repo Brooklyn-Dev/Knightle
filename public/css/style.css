@@ -15,10 +15,12 @@ html {
 }
 
 body {
+	font-size: 1.6rem;
 	font-family: "Inter", sans-serif;
 	color: #0a0a0a;
 	line-height: 1;
 	font-weight: 400;
+	padding: 1rem;
 }
 
 h1 {
@@ -167,4 +169,34 @@ h1 {
 .knight.game-over {
 	pointer-events: none !important;
 	cursor: default !important;
+}
+
+@media (max-width: 500px) {
+	body {
+		padding: 2rem;
+	}
+
+	h1 {
+		font-size: 2.4rem;
+	}
+
+	.moves-info {
+		font-size: 1.6rem;
+	}
+
+	.square::after {
+		inset: 3px;
+	}
+
+	.square.target::after {
+		border: 3px dashed #ef4444;
+	}
+
+	.square.visited::after {
+		border: 3px solid #3b82f6;
+	}
+
+	.square.visited.target::after {
+		border: 3px solid #22c55e;
+	}
 }
