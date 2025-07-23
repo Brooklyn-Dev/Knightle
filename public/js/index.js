@@ -1,9 +1,16 @@
-const BOARD_SIZE = 6;
+import { fetchDailyPuzzle } from "./api.js";
+
+let boardSize = 6;
 const boardEl = document.getElementById("chessboard");
+
+let title = "Knightle";
 
 // Game state
 let knightPosition = [0, 0];
+let targetPositions = [];
+const visitedPositions = new Set();
 let moveCount = 0;
+let hasWon = false;
 
 // Drag state
 let isDragging = true;
@@ -14,10 +21,10 @@ const highlightedSquares = [];
 // Setup
 function createBoard() {
 	boardEl.innerHTML = "";
-	boardEl.style.setProperty("--board-size", BOARD_SIZE);
+	boardEl.style.setProperty("--board-size", boardSize);
 
-	for (let row = 0; row < BOARD_SIZE; row++) {
-		for (let col = 0; col < BOARD_SIZE; col++) {
+	for (let row = 0; row < boardSize; row++) {
+		for (let col = 0; col < boardSize; col++) {
 			const square = createSquareElement(row, col);
 			boardEl.appendChild(square);
 		}
@@ -62,6 +69,7 @@ function getSquareAt(row, col) {
 
 // Drag Handlers
 function onMouseDown(e) {
+	if (hasWon) return;
 	if (e.target.classList.contains("knight")) {
 		isDragging = true;
 		draggedKnight = e.target;
@@ -128,7 +136,7 @@ function highlightValidMoves() {
 		moves.forEach(([rowDiff, colDiff]) => {
 			const targetRow = knightPosition[0] + rowDiff;
 			const targetCol = knightPosition[1] + colDiff;
-			if (targetRow >= 0 && targetRow < BOARD_SIZE && targetCol >= 0 && targetCol < BOARD_SIZE) {
+			if (targetRow >= 0 && targetRow < boardSize && targetCol >= 0 && targetCol < boardSize) {
 				const targetSquare = getSquareAt(targetRow, targetCol);
 				targetSquare.classList.add("valid");
 				highlightedSquares.push(targetSquare);
@@ -153,15 +161,48 @@ function isValidKnightMove(newRow, newCol) {
 
 function moveKnightTo(newRow, newCol) {
 	const oldSquare = getSquareAt(...knightPosition);
-	const newSquare = getSquareAt(newRow, newCol);
 	const knight = oldSquare.querySelector(".knight");
 
+	const newSquare = getSquareAt(newRow, newCol);
+	newSquare.classList.add("visited");
 	newSquare.appendChild(knight);
-	knightPosition[0] = newRow;
-	knightPosition[1] = newCol;
+
+	knightPosition = [newRow, newCol];
+	visitedPositions.add(`${newRow},${newCol}`);
+	moveCount++;
+
+	checkWinCondition();
+}
+
+function checkWinCondition() {
+	const allVisited = targetPositions.every(([row, col]) => visitedPositions.has(`${row},${col}`));
+	if (allVisited) {
+		hasWon = true;
+		setTimeout(() => alert(`You won in ${moveCount} moves! 🎉`), 200);
+	}
 }
 
 // Init
-createBoard();
-placeKnightOnBoard();
-setupDragAndDropListeners();
+async function init() {
+	const puzzle = await fetchDailyPuzzle();
+
+	const titleEl = document.getElementById("title");
+	const headerEl = document.getElementById("header");
+	titleEl.textContent = puzzle.title || "Knightle";
+	headerEl.textContent = puzzle.title || "Knightle";
+
+	knightPosition = puzzle.start;
+	boardSize = puzzle.boardSize || 6;
+	targetPositions = puzzle.targets;
+
+	createBoard();
+	placeKnightOnBoard();
+	setupDragAndDropListeners();
+
+	targetPositions.forEach(([row, col]) => {
+		const targetSquare = getSquareAt(row, col);
+		targetSquare.classList.add("target");
+	});
+}
+
+init();
