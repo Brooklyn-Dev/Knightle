@@ -10,20 +10,20 @@ function generatePuzzle(dateString) {
 	const boardSize = 6;
 	const numTargets = 3 + Math.floor(rng() * 3); // 3-5 targets
 
-	const startX = Math.floor(rng() * boardSize);
-	const startY = Math.floor(rng() * boardSize);
-	const start = [startX, startY];
+	const startRow = Math.floor(rng() * boardSize);
+	const startCol = Math.floor(rng() * boardSize);
+	const start = [startRow, startCol];
 
 	const targets = [];
 
 	while (targets.length < numTargets) {
-		const x = Math.floor(rng() * boardSize);
-		const y = Math.floor(rng() * boardSize);
+		const row = Math.floor(rng() * boardSize);
+		const col = Math.floor(rng() * boardSize);
 
-		if (x === startX && y === startY) continue;
-		if (targets.some(([tx, ty]) => tx === x && ty === y)) continue;
+		if (row === startRow && col === startCol) continue;
+		if (targets.some(([tRow, tCol]) => tRow === row && tCol === col)) continue;
 
-		targets.push([x, y]);
+		targets.push([row, col]);
 	}
 
 	return {
