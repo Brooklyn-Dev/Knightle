@@ -4,6 +4,9 @@ import { playSound } from "./audio.js";
 let boardSize;
 const boardEl = document.getElementById("chessboard");
 
+const titleEl = document.getElementById("title");
+const headerEl = document.getElementById("header");
+
 const currentMovesEl = document.getElementById("current-moves");
 const optimalMovesEl = document.getElementById("optimal-moves");
 const resetBtnEl = document.getElementById("reset-btn");
@@ -233,24 +236,36 @@ function checkWinCondition() {
 }
 
 // Init
-const puzzle = await fetchDailyPuzzle();
-
-const titleEl = document.getElementById("title");
-const headerEl = document.getElementById("header");
-titleEl.textContent = puzzle.title || "Knightle";
-headerEl.textContent = puzzle.title || "Knightle";
-
-boardSize = puzzle.boardSize || 6;
-targetPositions = puzzle.targets;
-optimalMovesEl.textContent = puzzle.leastMoves || "-";
-
-resetBtnEl.addEventListener("click", resetGame);
-shareBtnEl.addEventListener("click", shareResult);
-copyCloseBtnEl.addEventListener("click", () => {
-	copyBoxEl.classList.add("hide");
-});
-
 async function init() {
+	let puzzle;
+	try {
+		puzzle = await fetchDailyPuzzle();
+	} catch (err) {
+		console.error(err);
+		alert(`Error: ${err.message}\nTry again later.`);
+		return;
+	}
+
+	if (!puzzle || !puzzle.start || !puzzle.targets) {
+		alert(`Error: Puzzle data is incomplete`);
+		return;
+	}
+
+	// UI
+	titleEl.textContent = puzzle.title || "Knightle";
+	headerEl.textContent = puzzle.title || "Knightle";
+	boardSize = puzzle.boardSize || 6;
+	targetPositions = puzzle.targets;
+	optimalMovesEl.textContent = puzzle.leastMoves || "-";
+
+	// Event listeners
+	resetBtnEl.addEventListener("click", resetGame);
+	shareBtnEl.addEventListener("click", shareResult);
+	copyCloseBtnEl.addEventListener("click", () => {
+		copyBoxEl.classList.add("hide");
+	});
+
+	// Game state
 	knightPosition = puzzle.start.slice();
 	setupGame();
 }
@@ -301,4 +316,4 @@ function showCopyBox(text) {
 	copyTextEl.textContent = text;
 }
 
-init();
+await init();

@@ -1,5 +1,6 @@
 const express = require("express");
 const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
 const morgan = require("morgan");
 const path = require("path");
 
@@ -19,6 +20,15 @@ app.use(helmet());
 if (process.env.NODE_ENV === "development") {
 	app.use(morgan("dev"));
 }
+
+const limiter = rateLimit({
+	windowMs: 15 * 60 * 1000, // 15 min
+	max: 100,
+	message: "Too many requests from this IP, please try again later.",
+	standardHeaders: true,
+	legacyHeaders: false,
+});
+app.use("/api", limiter);
 
 app.use(express.json());
 
