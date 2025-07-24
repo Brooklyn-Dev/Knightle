@@ -25,7 +25,17 @@
 					<span class="move-display">Moves: <span id="current-moves" class="move-count">0</span> </span>
 					<span class="optimal-display">Best: <span id="optimal-moves" class="move-count">-</span> ⭐</span>
 				</div>
+
+				<div class="game-controls">
+					<button id="reset-btn" class="game-btn">Reset</button>
+					<button id="share-btn" class="game-btn">Share</button>
+				</div>
 			</div>
+		</div>
+
+		<div id="copy-box" class="copy-box hide">
+			<textarea readonly id="copy-text" class="copy-text"></textarea>
+			<button id="copy-close-btn" class="copy-close-btn">Close</button>
 		</div>
 	</body>
 </html>

@@ -5,6 +5,12 @@ const boardEl = document.getElementById("chessboard");
 
 const currentMovesEl = document.getElementById("current-moves");
 const optimalMovesEl = document.getElementById("optimal-moves");
+const resetBtnEl = document.getElementById("reset-btn");
+const shareBtnEl = document.getElementById("share-btn");
+
+const copyCloseBtnEl = document.getElementById("copy-close-btn");
+const copyBoxEl = document.getElementById("copy-box");
+const copyTextEl = document.getElementById("copy-text");
 
 // Game state
 let knightPosition = [0, 0];
@@ -210,24 +216,47 @@ function checkWinCondition() {
 		hasWon = true;
 		const knightEl = getKnightEl();
 		knightEl.classList.add("game-over");
-		setTimeout(() => alert(`You won in ${moveCount} moves! 🎉`), 100);
+		setTimeout(() => {
+			alert(`You won in ${moveCount} moves! 🎉`);
+			shareBtnEl.disabled = false;
+		}, 150);
 	}
 }
 
 // Init
+const puzzle = await fetchDailyPuzzle();
+
+const titleEl = document.getElementById("title");
+const headerEl = document.getElementById("header");
+titleEl.textContent = puzzle.title || "Knightle";
+headerEl.textContent = puzzle.title || "Knightle";
+
+boardSize = puzzle.boardSize || 6;
+targetPositions = puzzle.targets;
+optimalMovesEl.textContent = puzzle.leastMoves || "-";
+
+resetBtnEl.addEventListener("click", resetGame);
+shareBtnEl.addEventListener("click", shareResult);
+copyCloseBtnEl.addEventListener("click", () => {
+	copyBoxEl.classList.add("hide");
+});
+
 async function init() {
-	const puzzle = await fetchDailyPuzzle();
+	knightPosition = puzzle.start.slice();
+	setupGame();
+}
 
-	const titleEl = document.getElementById("title");
-	const headerEl = document.getElementById("header");
-	titleEl.textContent = puzzle.title || "Knightle";
-	headerEl.textContent = puzzle.title || "Knightle";
+function resetGame() {
+	knightPosition = puzzle.start.slice();
+	visitedPositions.clear();
+	moveCount = 0;
+	hasWon = false;
+	currentMovesEl.textContent = "0";
 
-	knightPosition = puzzle.start;
-	boardSize = puzzle.boardSize || 6;
-	targetPositions = puzzle.targets;
-	optimalMovesEl.textContent = puzzle.leastMoves || "-";
+	setupGame();
+}
 
+function setupGame() {
 	createBoard();
 	placeKnightOnBoard();
 	setupDragAndDropListeners();
@@ -236,6 +265,31 @@ async function init() {
 		const targetSquare = getSquareAt(row, col);
 		targetSquare.classList.add("target");
 	});
+
+	shareBtnEl.disabled = true;
+}
+
+function shareResult() {
+	const shareText = `${puzzle.title}\n ${puzzle.date}\n Moves: ${moveCount}/${puzzle.leastMoves}⭐\n https://github.com/Brooklyn-Dev/Knightle`;
+
+	if (navigator.clipboard) {
+		navigator.clipboard
+			.writeText(shareText)
+			.then(() => {
+				alert("Copied to clipboard!");
+			})
+			.catch((err) => {
+				console.error("Clipboard write failed", err);
+				showCopyBox(shareText);
+			});
+	} else {
+		showCopyBox(shareText);
+	}
+}
+
+function showCopyBox(text) {
+	copyBoxEl.classList.remove("hide");
+	copyTextEl.textContent = text;
 }
 
 init();
