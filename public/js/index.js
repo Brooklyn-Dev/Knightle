@@ -270,7 +270,7 @@ function setupGame() {
 }
 
 function shareResult() {
-	const shareText = `${puzzle.title}\n ${puzzle.date}\n Moves: ${moveCount}/${puzzle.leastMoves}⭐\n https://github.com/Brooklyn-Dev/Knightle`;
+	const shareText = `${puzzle.title}\n ${puzzle.date}\n Moves: ${moveCount}/${puzzle.leastMoves}⭐\n https://knightle.onrender.com/`;
 
 	if (navigator.clipboard) {
 		navigator.clipboard
