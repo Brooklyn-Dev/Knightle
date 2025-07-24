@@ -236,8 +236,9 @@ function checkWinCondition() {
 }
 
 // Init
+let puzzle;
+
 async function init() {
-	let puzzle;
 	try {
 		puzzle = await fetchDailyPuzzle();
 	} catch (err) {
