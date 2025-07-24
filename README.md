@@ -18,7 +18,6 @@ Made for HackClub's [Toybox](https://toybox.hackclub.com/) YSWS.
 
 -   Mobile / touch support
 -   Previous puzzles archive
--   Store puzzles in DB rather than generate on-request
 -   More performant least moves algorithm
 
 ## Credits

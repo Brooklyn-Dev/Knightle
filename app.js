@@ -3,7 +3,7 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 const path = require("path");
 
-const generatePuzzle = require("./puzzle/generatePuzzle");
+const storeOrFetchPuzzle = require("./puzzle/storeOrFetchPuzzle");
 const isValidDate = require("./utils/isValidDate");
 const formatDateString = require("./utils/formatDateString");
 const getDaysBetween = require("./utils/getDaysBetween");
@@ -25,24 +25,31 @@ app.use(express.json());
 const launch = new Date("2025-07-23");
 launch.setHours(0, 0, 0, 0);
 
-app.get(`/api/${VERSION}/puzzle/today`, (req, res) => {
+app.get(`/api/${VERSION}/puzzle/today`, async (req, res) => {
 	const requested = new Date();
 	requested.setHours(0, 0, 0, 0);
 
-	const date = new Date().toISOString().slice(0, 10);
+	const date = formatDateString(requested);
 	const index = getDaysBetween(launch, requested) + 1;
-	const puzzle = { id: index, title: `Knightle #${index}`, date, ...generatePuzzle(date) };
-	res.json(puzzle);
+
+	try {
+		const puzzle = await storeOrFetchPuzzle(date, index);
+		res.json(puzzle);
+	} catch (err) {
+		console.error("Error in /puzzle/today:", err); // ✅ Logs helpful debug info
+
+		res.status(500).json({ error: "Failed to fetch puzzle." });
+	}
 });
 
-app.get(`/api/${VERSION}/puzzle/:id`, (req, res) => {
-	const id = parseInt(req.params.id);
-	if (isNaN(id) || id < 1) {
-		return res.status(400).json({ error: "Invalid puzzle id" });
+app.get(`/api/${VERSION}/puzzle/:index`, async (req, res) => {
+	const index = parseInt(req.params.index);
+	if (isNaN(index) || index < 1) {
+		return res.status(400).json({ error: "Invalid puzzle index" });
 	}
 
 	const requested = new Date(launch);
-	requested.setDate(launch.getDate() + (id - 1));
+	requested.setDate(launch.getDate() + (index - 1));
 	requested.setHours(0, 0, 0, 0);
 
 	const today = new Date();
@@ -52,12 +59,17 @@ app.get(`/api/${VERSION}/puzzle/:id`, (req, res) => {
 		return res.status(403).json({ error: "Puzzle not available for that date" });
 	}
 
-	const date = requested.toISOString().slice(0, 10);
-	const puzzle = { title: `Knightle #${id}`, date, ...generatePuzzle(date) };
-	res.json(puzzle);
+	const date = formatDateString(requested);
+
+	try {
+		const puzzle = await storeOrFetchPuzzle(date, index);
+		res.json(puzzle);
+	} catch (err) {
+		res.status(500).json({ error: "Failed to fetch puzzle." });
+	}
 });
 
-app.get(`/api/${VERSION}/puzzle`, (req, res) => {
+app.get(`/api/${VERSION}/puzzle`, async (req, res) => {
 	const { year, month, day } = req.query;
 
 	if (!year || !month || !day) {
@@ -84,8 +96,13 @@ app.get(`/api/${VERSION}/puzzle`, (req, res) => {
 
 	const date = formatDateString(requested);
 	const index = getDaysBetween(launch, requested) + 1;
-	const puzzle = { id: index, title: `Knightle #${index}`, date, ...generatePuzzle(date) };
-	res.json(puzzle);
+
+	try {
+		const puzzle = await storeOrFetchPuzzle(date, index);
+		res.json(puzzle);
+	} catch (err) {
+		res.status(500).json({ error: "Failed to fetch puzzle." });
+	}
 });
 
 module.exports = app;
