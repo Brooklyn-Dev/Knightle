@@ -1,4 +1,5 @@
 import { fetchDailyPuzzle } from "./api.js";
+import { playSound } from "./audio.js";
 
 let boardSize;
 const boardEl = document.getElementById("chessboard");
@@ -197,6 +198,14 @@ function moveKnightTo(newRow, newCol) {
 	const newSquare = getSquareAt(newRow, newCol);
 	newSquare.classList.add("visited");
 	newSquare.appendChild(knightEl);
+
+	playSound("/sfx/move.mp3");
+	const landedOnNewTarget = targetPositions.some(
+		([row, col]) => newRow === row && newCol === col && !visitedPositions.has(`${row},${col}`)
+	);
+	if (landedOnNewTarget) {
+		playSound("/sfx/target.mp3");
+	}
 
 	knightPosition = [newRow, newCol];
 	visitedPositions.add(`${newRow},${newCol}`);

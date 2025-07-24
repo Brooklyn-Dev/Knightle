@@ -21,6 +21,11 @@ Made for HackClub's [Toybox](https://toybox.hackclub.com/) YSWS.
 -   Store puzzles in DB rather than generate on-request
 -   More performant least moves algorithm
 
+## Credits
+
+-   [Knight SVG](https://commons.wikimedia.org/wiki/File:Chess_nlt45.svg)
+-   [SFX](https://pixabay.com/users/floraphonic-38928062/)
+
 ## Like this project?
 
 If you find this project interesting or useful, consider giving it a star ⭐️!
