@@ -1,10 +1,11 @@
-const pg = require("pg");
+const { Pool } = require("pg");
 
-const client = new pg.Client({ connectionString: process.env.DATABASE_URL });
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
 async function connectDB() {
-	await client.connect();
-	await client.query(`
+	const client = await pool.connect();
+	try {
+		await client.query(`
         CREATE TABLE IF NOT EXISTS puzzles (
             id SERIAL PRIMARY KEY,
             index INTEGER UNIQUE NOT NULL,
@@ -17,7 +18,10 @@ async function connectDB() {
         );
     `);
 
-	console.log("Knightle DB setup successful.");
+		console.log("Knightle DB setup successful.");
+	} finally {
+		client.release();
+	}
 }
 
-module.exports = { client, connectDB };
+module.exports = { pool, connectDB };
