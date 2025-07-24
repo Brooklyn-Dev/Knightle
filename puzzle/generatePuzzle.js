@@ -4,21 +4,21 @@ function getRNG(dateString) {
 	return seedrandom(dateString);
 }
 
+const BOARD_SIZE = 6;
+const NUM_TARGETS = 6;
+
 function generatePuzzle(dateString) {
 	const rng = getRNG(dateString);
 
-	const boardSize = 6;
-	const numTargets = 4 + Math.floor(rng() * 3); // 4-6 targets
-
-	const startRow = Math.floor(rng() * boardSize);
-	const startCol = Math.floor(rng() * boardSize);
+	const startRow = Math.floor(rng() * BOARD_SIZE);
+	const startCol = Math.floor(rng() * BOARD_SIZE);
 	const start = [startRow, startCol];
 
 	const targets = [];
 
-	while (targets.length < numTargets) {
-		const row = Math.floor(rng() * boardSize);
-		const col = Math.floor(rng() * boardSize);
+	while (targets.length < NUM_TARGETS) {
+		const row = Math.floor(rng() * BOARD_SIZE);
+		const col = Math.floor(rng() * BOARD_SIZE);
 
 		if (row === startRow && col === startCol) continue;
 		if (targets.some(([tRow, tCol]) => tRow === row && tCol === col)) continue;
@@ -27,10 +27,10 @@ function generatePuzzle(dateString) {
 	}
 
 	return {
-		boardSize,
+		boardSize: BOARD_SIZE,
 		start,
 		targets,
-		leastMoves: findLeastMoves(boardSize, start, targets),
+		leastMoves: findLeastMoves(BOARD_SIZE, start, targets),
 	};
 }
 
