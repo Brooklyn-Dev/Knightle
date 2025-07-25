@@ -1,6 +1,6 @@
 # Knightle
 
-![GitHub issues](https://img.shields.io/github/issues/Brooklyn-Dev/ray-tracing)
+![GitHub issues](https://img.shields.io/github/issues/Brooklyn-Dev/Knightle)
 
 Knightle is a chess-inspired daily puzzle game. Find the shortest route while visiting all red squares.
 
