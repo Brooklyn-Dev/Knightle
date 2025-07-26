@@ -1,5 +1,29 @@
 const { pool } = require("../db");
 
+async function getPuzzlesCount() {
+	const client = await pool.connect();
+	try {
+		const { rows } = await client.query("SELECT COUNT(*) FROM puzzles");
+		return parseInt(rows[0].count);
+	} finally {
+		client.release();
+	}
+}
+
+async function findAllPuzzles({ limit, offset, sort }) {
+	const client = await pool.connect();
+	try {
+		const direction = sort.toUpperCase() === "ASC" ? "ASC" : "DESC";
+		const { rows } = await client.query(
+			`SELECT index, title, date, board_size, start, targets, least_moves FROM puzzles ORDER BY index ${direction} LIMIT $1 OFFSET $2`,
+			[limit, offset]
+		);
+		return rows || null;
+	} finally {
+		client.release();
+	}
+}
+
 async function findPuzzleByIndexOrDate(index, date) {
 	const client = await pool.connect();
 	try {
@@ -27,4 +51,4 @@ async function insertPuzzle(puzzle) {
 	}
 }
 
-module.exports = { findPuzzleByIndexOrDate, insertPuzzle };
+module.exports = { getPuzzlesCount, findAllPuzzles, findPuzzleByIndexOrDate, insertPuzzle };
