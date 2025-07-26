@@ -1,16 +1,14 @@
 const camelcaseKeys = require("camelcase-keys").default;
 
-const generatePuzzle = require("./generatePuzzle");
 const { findPuzzleByIndexOrDate, insertPuzzle } = require("../../models/puzzleModel");
 const formatDateString = require("../../utils/formatDateString");
+const generatePuzzle = require("./generatePuzzle");
 
 async function storeOrFetchPuzzle(index, date) {
-	let puzzle = await findPuzzleByIndexOrDate(index, date);
-
+	const puzzle = await findPuzzleByIndexOrDate(index, date);
 	if (puzzle) {
 		puzzle.date = formatDateString(puzzle.date);
-		const { id, ...rest } = puzzle;
-		return camelcaseKeys(rest, { deep: true });
+		return camelcaseKeys(puzzle, { deep: true });
 	}
 
 	const generated = generatePuzzle(date);

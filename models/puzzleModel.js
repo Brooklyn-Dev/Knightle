@@ -3,8 +3,11 @@ const { pool } = require("../db");
 async function findPuzzleByIndexOrDate(index, date) {
 	const client = await pool.connect();
 	try {
-		const res = await client.query("SELECT * FROM puzzles WHERE index = $1 OR date = $2", [index, date]);
-		return res.rows[0] || null;
+		const { rows } = await client.query(
+			"SELECT index, title, date, board_size, start, targets, least_moves FROM puzzles WHERE index = $1 OR date = $2",
+			[index, date]
+		);
+		return rows[0] || null;
 	} finally {
 		client.release();
 	}
