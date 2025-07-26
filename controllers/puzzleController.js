@@ -1,4 +1,4 @@
-const storeOrFetchPuzzle = require("../puzzle/storeOrFetchPuzzle");
+const storeOrFetchPuzzle = require("../services/puzzle/storeOrFetchPuzzle");
 const formatDateString = require("../utils/formatDateString");
 const getDaysBetween = require("../utils/getDaysBetween");
 
@@ -42,7 +42,7 @@ exports.getPuzzleByIndex = async (req, res) => {
 	const date = formatDateString(requested);
 
 	try {
-		const puzzle = await storeOrFetchPuzzle(date, index);
+		const puzzle = await storeOrFetchPuzzle(index, date);
 		res.json(puzzle);
 	} catch (err) {
 		res.status(500).json({ error: "Failed to fetch puzzle." });
@@ -71,7 +71,7 @@ exports.getPuzzleByDate = async (req, res) => {
 	const index = getDaysBetween(launch, requested) + 1;
 
 	try {
-		const puzzle = await storeOrFetchPuzzle(date, index);
+		const puzzle = await storeOrFetchPuzzle(index, date);
 		res.json(puzzle);
 	} catch (err) {
 		res.status(500).json({ error: "Failed to fetch puzzle." });
