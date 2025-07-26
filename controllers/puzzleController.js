@@ -1,10 +1,11 @@
 const storeOrFetchPuzzle = require("../puzzle/storeOrFetchPuzzle");
-const isValidDate = require("../utils/isValidDate");
 const formatDateString = require("../utils/formatDateString");
 const getDaysBetween = require("../utils/getDaysBetween");
 
 const launch = new Date("2025-07-23");
 launch.setHours(0, 0, 0, 0);
+
+const dateRegex = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;
 
 exports.getTodayPuzzle = async (req, res) => {
 	try {
@@ -49,20 +50,15 @@ exports.getPuzzleByIndex = async (req, res) => {
 };
 
 exports.getPuzzleByDate = async (req, res) => {
-	const { year, month, day } = req.query;
-	if (!year || !month || !day) {
-		return res.status(400).json({ error: "Missing date parameters" });
+	const { date } = req.params;
+	if (!dateRegex.test(date)) {
+		return res.status(400).json({ error: "Invalid date format. Use YYYY-MM-DD." });
 	}
 
-	const yyyy = parseInt(year);
-	const mm = parseInt(month);
-	const dd = parseInt(day);
-
-	if (isNaN(yyyy) || isNaN(mm) || isNaN(dd) || !isValidDate(yyyy, mm, dd)) {
-		return res.status(400).json({ error: "Invalid date values" });
+	const requested = new Date(date);
+	if (isNaN(requested.getTime())) {
+		return res.status(400).json({ error: "Invalid date." });
 	}
-
-	const requested = new Date(yyyy, mm - 1, dd);
 	requested.setHours(0, 0, 0, 0);
 
 	const today = new Date();
@@ -72,7 +68,6 @@ exports.getPuzzleByDate = async (req, res) => {
 		return res.status(403).json({ error: "Puzzle not available for that date" });
 	}
 
-	const date = formatDateString(requested);
 	const index = getDaysBetween(launch, requested) + 1;
 
 	try {

@@ -4,6 +4,6 @@ const puzzleController = require("./../controllers/puzzleController");
 
 router.get("/today", puzzleController.getTodayPuzzle);
 router.get("/:index", puzzleController.getPuzzleByIndex);
-router.get("/", puzzleController.getPuzzleByDate);
+router.get("/date/:date", puzzleController.getPuzzleByDate);
 
 module.exports = router;
